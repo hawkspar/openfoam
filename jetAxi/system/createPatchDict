@@ -1,0 +1,141 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  dev
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    format      ascii;
+    class       dictionary;
+    object      decomposeParDict;
+}
+
+matchTolerance 1E-3;
+
+pointSync false;
+
+patches
+(
+    {
+        name inlet;
+
+        patchInfo
+        {
+            type        patch;
+            physicalType inlet;
+        }
+
+        constructFrom patches;
+
+        patches (auto0);
+    }  
+    {
+        name front;
+
+        patchInfo
+        {
+            type        wedge;
+            physicalType wedge;
+        }
+
+        constructFrom patches;
+
+        patches (auto1);
+    }
+    {
+        name back;
+
+        patchInfo
+        {
+            type        wedge;
+            physicalType wedge;
+        }
+
+        constructFrom patches;
+
+        patches (auto2);
+    }
+    {
+        name wall_in;
+
+        patchInfo
+        {
+            type        wall;
+            physicalType wall;
+        }
+
+        constructFrom patches;
+
+        patches (auto3);
+    }
+    {
+        name wall_out;
+
+        patchInfo
+        {
+            type        wall;
+            physicalType wall;
+        }
+
+        constructFrom patches;
+
+        patches (auto5);
+    }
+    {
+        name wall_end;
+
+        patchInfo
+        {
+            type        wall;
+            physicalType wall;
+        }
+
+        constructFrom patches;
+
+        patches (auto8);
+    }    
+    {
+        name coflow;
+
+        patchInfo
+        {
+            type        patch;
+            physicalType inlet;
+        }
+
+        constructFrom patches;
+
+        patches (auto4);
+    }
+    {
+        name far;
+
+        patchInfo
+        {
+            type        patch;
+            physicalType outlet;
+        }
+
+        constructFrom patches;
+
+        patches (auto6);
+    } 
+    {
+        name outlet;
+
+        patchInfo
+        {
+            type        patch;
+            physicalType outlet;
+        }
+
+        constructFrom patches;
+
+        patches (auto7);
+    }
+    
+    
+
+);

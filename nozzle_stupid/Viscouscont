@@ -1,0 +1,25 @@
+#!/bin/bash
+
+./Allclean
+./Generatemesh
+
+
+for i in 1 2 3 4 5 6 7 8 9 10 11;
+do
+	nu=$(awk '{printf("%.5e",2^ -(6+$1))}' <<< "$i");
+	echo "Iteration $i ongoing... Viscosity at $nu";
+	sed -i "s/nu              [^;]*/nu              $nu/" constant/transportProperties;
+	let "startTime=2000*(i-1)";
+	let "endTime  =2000*i";
+	sed -i 's/startTime       [^;]*/startTime       '$startTime'/' system/controlDict;
+	sed -i 's/endTime         [^;]*/endTime         '$endTime'/' system/controlDict;
+	
+	./Hotstart &> /dev/null;
+
+	printf -v string0 "%d" "$endTime"
+	if [[ ! -d "$string0" && ! -d "$string1" ]]
+	then
+		echo "Calculations broke down...";
+		break;
+	fi
+done

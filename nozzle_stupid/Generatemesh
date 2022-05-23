@@ -1,0 +1,24 @@
+#!/bin/sh
+cd ${0%/*} || exit 1    # Run from this directory
+
+# Source tutorial run functions
+. $WM_PROJECT_DIR/bin/tools/RunFunctions
+
+runApplication gmshToFoam nozzle_stupid.msh
+awk -v RS="\0" -v ORS="" '{ gsub(/front\n    {\n        type            patch;\n        physicalType    patch;/, "front\n    {\n        type            empty;\n        physicalType    empty;\n        inGroups        1(empty);"); print }' constant/polyMesh/boundary > tmp
+awk -v RS="\0" -v ORS="" '{ gsub(/back\n    {\n        type            patch;\n        physicalType    patch;/, "back\n    {\n        type            empty;\n        physicalType    empty;\n        inGroups        1(empty);"); print }' tmp > constant/polyMesh/boundary
+awk -v RS="\0" -v ORS="" '{ gsub(/inlet\n    {\n        type            patch;\n        physicalType    patch;/, "inlet\n    {\n        type            patch;\n        physicalType    inlet;"); print }' constant/polyMesh/boundary > tmp
+awk -v RS="\0" -v ORS="" '{ gsub(/coflow\n    {\n        type            patch;\n        physicalType    patch;/, "coflow\n    {\n        type            patch;\n        physicalType    inlet;"); print }' tmp > constant/polyMesh/boundary
+awk -v RS="\0" -v ORS="" '{ gsub(/far\n    {\n        type            patch;\n        physicalType    patch;/, "far\n    {\n        type            patch;\n        physicalType    outlet;"); print }' constant/polyMesh/boundary > tmp
+awk -v RS="\0" -v ORS="" '{ gsub(/bottom\n    {\n        type            patch;\n        physicalType    patch;/, "bottom\n    {\n        type            patch;\n        physicalType    outlet;"); print }' constant/polyMesh/boundary > tmp
+awk -v RS="\0" -v ORS="" '{ gsub(/outlet\n    {\n        type            patch;\n        physicalType    patch;/, "outlet\n    {\n        type            patch;\n        physicalType    outlet;"); print }' tmp > constant/polyMesh/boundary
+awk -v RS="\0" -v ORS="" '{ gsub(/wall\n    {\n        type            patch;\n        physicalType    patch;/, "wall\n    {\n        type            wall;\n        physicalType    wall;\n        inGroups        1(wall);"); print }' constant/polyMesh/boundary > tmp
+mv tmp constant/polyMesh/boundary
+runApplication createBaffles
+rm -rf constant/polyMesh
+mesh_adress=$(find . -type d -regex "./[1-9][0-9]*") # For some reason createBaffles creates duplicate of mesh in first time directory
+mv -f $mesh_adress"/polyMesh" constant/polyMesh
+rm -rf $mesh_adress
+
+cp -r 0.orig 0
+

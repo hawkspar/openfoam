@@ -12,9 +12,9 @@ export OMPI_ALLOW_RUN_AS_ROOT_CONFIRM=1
 # Solver choice
 runParallel simpleFoam
 
-#runApplication reconstructParMesh -constant
-#runApplication reconstructPar #-latestTime
+runApplication reconstructParMesh -constant
+runApplication reconstructPar -latestTime
 
-runParallel foamToVTK -patches '(front)' -overwrite -fields '(p U nut)' -no-internal -latestTime
+runApplication foamToVTK -fields '(p U nut)' -patches '(front)' #-overwrite -latestTime -no-internal
 
 #------------------------------------------------------------------------------

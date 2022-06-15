@@ -1,0 +1,20 @@
+#!/bin/sh
+cd ${0%/*} || exit 1    # Run from this directory
+
+# Source tutorial run functions
+. $WM_PROJECT_DIR/bin/tools/RunFunctions
+
+runApplication decomposePar
+
+export OMPI_ALLOW_RUN_AS_ROOT=1 
+export OMPI_ALLOW_RUN_AS_ROOT_CONFIRM=1
+
+# Solver choice
+runParallel simpleFoam
+
+runApplication reconstructParMesh -constant
+runApplication reconstructPar -latestTime
+
+runApplication foamToVTK -fields '(p U nut)' -patches '(front)' #-overwrite -latestTime -no-internal
+
+#------------------------------------------------------------------------------

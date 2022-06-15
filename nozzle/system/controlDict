@@ -18,11 +18,11 @@ application     simpleFoam;
 
 startFrom       startTime;
 
-startTime       0;
+startTime       25000;
 
 stopAt          endTime;
 
-endTime         4000;
+endTime         26000;
 
 deltaT          1;
 

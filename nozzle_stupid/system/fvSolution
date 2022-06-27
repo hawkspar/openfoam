@@ -43,7 +43,7 @@ SIMPLE
         nuTilda         1e-5;
     }
 
-    nNonOrthogonalCorrectors 0;
+    nNonOrthogonalCorrectors 1;
 }
 
 relaxationFactors

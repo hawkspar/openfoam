@@ -44,7 +44,7 @@ internalField #codeStream //Use codeStream to set the value of the initial condi
 	const scalar U_M = 10;
 	const scalar U_m = .1;
 	const scalar R = .1;
-	const scalar r1 = 5*R;
+	const scalar H = 10*R;
 	vectorField U(mesh.nCells(), vector(0,0,0));
         forAll(U, i)
         {
@@ -56,7 +56,7 @@ internalField #codeStream //Use codeStream to set the value of the initial condi
 			U[i][0] = U_M*tanh(4*(1-r*r/R/R));
 		}
 		else if (r>R) {
-			U[i][0] = U_m*tanh(4*(1-(r-R)*(r-R)/(r1-R)/(r1-R)));
+			U[i][0] = U_m*tanh(4*(1-(r-R)*(r-R)/(H-R)/(H-R)));
 		}
         }
         U.writeEntry("", os);
@@ -123,12 +123,12 @@ boundaryField
 		const vectorField& Cf = boundaryPatch.Cf();
 		const scalar U_m = .1;
 		const scalar R = .1;
-		const scalar r1 = 5*R;
+		const scalar H = 10*R;
 		forAll(Cf, faceI) {
 			const scalar y = Cf[faceI].y();
 			const scalar z = Cf[faceI].z();
 			const scalar r=sqrt(y*y+z*z);
-			(*this)[faceI] = vector(U_m*tanh(4*(1-(r-R)*(r-R)/(r1-R)/(r1-R))),0,0);
+			(*this)[faceI] = vector(U_m*tanh(4*(1-(r-R)*(r-R)/(H-R)/(H-R))),0,0);
 		}
 	#};
     }

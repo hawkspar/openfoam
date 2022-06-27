@@ -1,0 +1,11 @@
+{
+  "file-series-version" : "1.0",
+  "files" : [
+    { "name" : "_0", "time" : 0 },
+    { "name" : "_100", "time" : 100 },
+    { "name" : "_200", "time" : 200 },
+    { "name" : "_300", "time" : 300 },
+    { "name" : "_400", "time" : 400 },
+    { "name" : "_500", "time" : 500 }
+  ]
+}

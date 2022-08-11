@@ -20,7 +20,7 @@ solvers
     {
         solver          GAMG;
         smoother        GaussSeidel;
-        tolerance       1e-6;
+        tolerance       1e-4;
         relTol          .01;
     }
 
@@ -29,7 +29,7 @@ solvers
         solver          smoothSolver;
         smoother  	GaussSeidel;
 	nSweeps	2;
-        tolerance       1e-8;
+        tolerance       1e-6;
         relTol          .1;
     }
 }
@@ -38,26 +38,22 @@ SIMPLE
 {
     residualControl
     {
-        p               1e-5;
-        U               1e-5;
-        nuTilda         1e-5;
+        p       1e-4;
+        U       1e-6;
+        nuTilda 1e-6;
     }
 
+    consistent yes;
     nNonOrthogonalCorrectors 0;
 }
 
 relaxationFactors
 {
-    fields
-    {
-        p               .5;
-    }
     equations
     {
-        U               .7;
-        nuTilda    	.7;
+        U     .95; // 0.9 is more stable but 0.95 more convergent
+        ".*"  .95; // 0.9 is more stable but 0.95 more convergent
     }
 }
-
 
 // ************************************************************************* //

@@ -1,0 +1,4 @@
+#!/bin/sh
+./Allclean
+./Generatemesh
+./Computationrun

@@ -15,7 +15,7 @@ FoamFile
 
 dimensions [0 2 -2 0 0 0 0];
 
-internalField uniform 1e5;
+internalField uniform 0;
 
 boundaryField
 {
@@ -42,20 +42,18 @@ boundaryField
 
     coflow
     {
-        type fixedValue;
-        value $internalField;
+        type zeroGradient;
     }
 
     far
     {
-        type fixedValue;
-        value $internalField;
+        type zeroGradient;
     }
 
     outlet
     {
-	type fixedValue;
-        value $internalField;
+	type freestreamPressure;
+        freestreamValue uniform 0;
     }
 }
 

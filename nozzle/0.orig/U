@@ -44,22 +44,19 @@ internalField #codeStream //Use codeStream to set the value of the initial condi
 	const scalar U_M = 10;
 	const scalar U_m = 1;
 	const scalar R = .1;
-	const scalar h = 15*R;
+	const scalar a = 6.;
 	vectorField U(mesh.nCells(), vector(0,0,0));
         forAll(U, i)
         {
 		// Access cell centers coordinates
 		const scalar y = CC[i].y();
 		const scalar z = CC[i].z();
-		const scalar a =(y*y+z*z)/R/R;
-		if (a<1) {
-			U[i][0] = U_M*tanh(4*(1-a));
-		}
-		else if ((a>1) && (a<pow(h/R,2))) {
-			U[i][0] = U_m*tanh(4*(a-1));
+		const scalar r =(y*y+z*z)/R/R;
+		if (r<1) {
+			U[i][0] = U_M*tanh(a*(1-r));
 		}
 		else {
-			U[i][0] = U_m;
+			U[i][0] = U_m*tanh(a*(r-1));
 		}
         }
         U.writeEntry("", os);
@@ -85,11 +82,12 @@ boundaryField
 		const vectorField& Cf = boundaryPatch.Cf();
 		const scalar U_M = 10;
 		const scalar R = .1;
+		const scalar a = 6.;
 		forAll(Cf, faceI) {
 			const scalar y = Cf[faceI].y();
 			const scalar z = Cf[faceI].z();
-			const scalar a = (y*y+z*z)/R/R;
-			(*this)[faceI] = vector(U_M*tanh(4*(1-a)),0,0);
+			const scalar r = (y*y+z*z)/R/R;
+			(*this)[faceI] = vector(U_M*tanh(a*(1-r)),0,0);
 		}
 	#};
     }
@@ -126,11 +124,12 @@ boundaryField
 		const vectorField& Cf = boundaryPatch.Cf();
 		const scalar U_m = 1;
 		const scalar R = .1;
+		const scalar a = 6.;
 		forAll(Cf, faceI) {
 			const scalar y = Cf[faceI].y();
 			const scalar z = Cf[faceI].z();
-			const scalar a = (y*y+z*z)/R/R;
-			(*this)[faceI] = vector(U_m*tanh(4*(a-1)),0,0);
+			const scalar r = (y*y+z*z)/R/R;
+			(*this)[faceI] = vector(U_m*tanh(a*(r-1)),0,0);
 		}
 	#};
     }
@@ -143,7 +142,8 @@ boundaryField
 
     outlet
     {
-	type zeroGradient;
+	type freestream;
+	freestreamValue uniform (1 0 0);
     }
 
 }

@@ -1,4 +1,0 @@
-#!/bin/sh
-rm -f log.rec* log.foam* log.simple*
-
-./Computationrun

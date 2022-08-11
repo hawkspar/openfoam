@@ -4,7 +4,7 @@
 # Source tutorial run functions
 . $WM_PROJECT_DIR/bin/tools/RunFunctions
 
-mesh_name=$(find . -regex "./nozzle_.*\.msh")
+mesh_name=$(find . -regex "./nozzle.*\.msh")
 runApplication gmshToFoam $mesh_name
 
 awk -v RS="\0" -v ORS="" '{ gsub(/front\n    {\n        type            patch;\n        physicalType    patch;/, "front\n    {\n        type            wedge;\n        physicalType    wedge;\n        inGroups        1(wedge);"); print }' constant/polyMesh/boundary > tmp
@@ -19,7 +19,7 @@ mv tmp constant/polyMesh/boundary
 
 runApplication createBaffles
 rm -rf constant/polyMesh
-mesh_adress=$(find . -type d -regex "./[1-9][0-9]*") # For some reason createBaffles creates duplicate of mesh in first time directory
+mesh_adress=$(find . -type d -regex "./[1-9][0-9]*") # For some reason createBaffles creates duplicate of mesh in first time directory (careful hypothesis of cllean case here)
 mv -f $mesh_adress"/polyMesh" constant/polyMesh
 rm -rf $mesh_adress
 

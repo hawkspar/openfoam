@@ -3,21 +3,25 @@
 ./Allclean
 ./Generatemesh
 
-for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15;
-do
-	nu=$(awk '{printf("%.5e",2^ -(3+$1))}' <<< "$i");
+for i in 1 2 3; do
+	nu=$(awk '{printf("%.5e",10^ -(2+$1))}' <<< "$i");
 	echo "Iteration $i ongoing... Viscosity at $nu";
 	sed -i "s/nu              [^;]*/nu              $nu/" constant/transportProperties;
-	let "startTime=4000*(i-1)";
-	let "endTime  =4000*i";
+	let "startTime=0";
+	if [[  "$i" -gt 0 ]]; then
+		l=$(find . -type d -regex "./[0-9]*");
+		for x in $l ; do 
+    			n=${x#\.\/}; # take just the number so that comparisons work 
+    			[ "$n" -gt "$startTime" ] && startTime=$n; 
+  		done
+	fi
+	let "endTime=startTime+200";
 	sed -i 's/startTime       [^;]*/startTime       '$startTime'/' system/controlDict;
 	sed -i 's/endTime         [^;]*/endTime         '$endTime'/' system/controlDict;
 	
 	./Hotstart &> /dev/null;
 
-	printf -v endDir "%d" "$endTime"
-	if [[ ! -d "$endDir" ]]
-	then
+	if ! tail -1 log.simpleFoam | grep "Finalising parallel run"; then
 		echo "Calculations broke down...";
 		break;
 	fi

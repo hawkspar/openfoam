@@ -5,8 +5,8 @@ L=60*R; H=15*R; o=1;
 r=5e-5;
 
 // Base 'rectangle'
-Point(1) = {0, 0, 0,  200*r};
-Point(2) = {L, 0, 0, 1000*r};
+Point(1) = {0, 0, 0,   20*r};
+Point(2) = {L, 0, 0,  750*r};
 Point(3) = {L, H, 0, 6000*r};
 Point(4) = {0, H, 0, 6000*r};
 // Actual nozzle
@@ -27,8 +27,8 @@ Point(16) = {.9*R, 1.05*R, 0, 15*r};
 // Less refined area 2
 Point(17) = {.85*R,     R, 0,     r};
 Point(18) = {.85*R, .85*R, 0,  15*r};
-Point(19) = { 25*R,  .3*R, 0, 300*r};
-Point(20) = { 25*R, 4.5*R, 0, 500*r};
+Point(19) = { 25*R,  .3*R, 0, 100*r};
+Point(20) = { 25*R, 4.5*R, 0, 300*r};
 Point(21) = {.85*R, 1.2*R, 0,  75*r};
 
 // Main rectangle

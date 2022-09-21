@@ -20,17 +20,22 @@ solvers
     {
         solver          GAMG;
         smoother        GaussSeidel;
-        tolerance       1e-4;
-        relTol          .01;
-    }
+        tolerance       1e-6;
+        relTol          .001;
+	nPreSweeps	0;
+	nPostSweeps	2;
+	cacheAgglomeration on;
+	agglomerator	faceAreaPair;
+	nCellsInCoarsestLevel 1000;
+	mergeLevels	1;
+}
 
     "(U|nuTilda)"
     {
-        solver          smoothSolver;
-        smoother  	GaussSeidel;
-	nSweeps	2;
-        tolerance       1e-6;
-        relTol          .1;
+        solver          PBiCGStab;
+	preconditioner	DILU;
+        tolerance       1e-8;
+        relTol          .01;
     }
 }
 
@@ -38,21 +43,22 @@ SIMPLE
 {
     residualControl
     {
-        p       1e-4;
-        U       1e-6;
-        nuTilda 1e-6;
+        p       1e-6;
+        U       1e-8;
+        nuTilda 1e-8;
     }
-
     consistent yes;
-    nNonOrthogonalCorrectors 0;
+    nNonOrthogonalCorrectors 1;
+    nCorrector 3;
+    nOuterCorrectors 1;
 }
 
 relaxationFactors
 {
     equations
     {
-        U     .95; // 0.9 is more stable but 0.95 more convergent
-        ".*"  .95; // 0.9 is more stable but 0.95 more convergent
+        U     .99; // 0.9 is more stable but 0.95 more convergent
+        ".*"  .99; // 0.9 is more stable but 0.95 more convergent
     }
 }
 

@@ -15,7 +15,7 @@ for i in 1 2 3; do
     			[ "$n" -gt "$startTime" ] && startTime=$n; 
   		done
 	fi
-	let "endTime=startTime+200";
+	let "endTime=startTime+1000";
 	sed -i 's/startTime       [^;]*/startTime       '$startTime'/' system/controlDict;
 	sed -i 's/endTime         [^;]*/endTime         '$endTime'/' system/controlDict;
 	
@@ -26,3 +26,9 @@ for i in 1 2 3; do
 		break;
 	fi
 done
+
+sed -i "s/nu              [^;]*/nu              5.e-6/" constant/transportProperties;
+sed -i 's/startTime       [^;]*/startTime       '$endTime'/' system/controlDict;	
+sed -i 's/endTime         [^;]*/endTime         5000/' system/controlDict;
+
+./Hotstart &> /dev/null;

@@ -2,13 +2,13 @@
 Mesh.MshFileVersion = 2.2;
 R=.1;
 L=60*R; H=15*R; o=1;
-r=1e-4;
+r=5e-5;
 
 // Base 'rectangle'
-Point(1) = {0, 0, 0,   20*r};
-Point(2) = {L, 0, 0,  200*r};
-Point(3) = {L, H, 0, 2000*r};
-Point(4) = {0, H, 0, 2000*r};
+Point(1) = {0, 0, 0,  200*r};
+Point(2) = {L, 0, 0, 1000*r};
+Point(3) = {L, H, 0, 6000*r};
+Point(4) = {0, H, 0, 6000*r};
 // Actual nozzle
 Point(5) = {0, R, 0, r};
 Point(6) = {R, R, 0, r};
@@ -20,16 +20,16 @@ Point(10) = {1.1*R, 1.01*R, 0, r};
 Point(11) = {.95*R, 1.01*R, 0, r};
 // Less refined area
 Point(12) = {.9*R,      R, 0,    r};
-Point(13) = {.9*R,  .95*R, 0,  3*r};
+Point(13) = {.9*R,  .95*R, 0,  7*r};
 Point(14) = { 2*R,  .95*R, 0,  7*r};
 Point(15) = { 2*R,  1.1*R, 0, 10*r};
-Point(16) = {.9*R, 1.05*R, 0, 10*r};
+Point(16) = {.9*R, 1.05*R, 0, 15*r};
 // Less refined area 2
 Point(17) = {.85*R,     R, 0,     r};
-Point(18) = {.85*R, .85*R, 0,   5*r};
-Point(19) = { 25*R,  .3*R, 0,  75*r};
-Point(20) = { 25*R, 4.5*R, 0, 100*r};
-Point(21) = {.85*R, 1.2*R, 0,  25*r};
+Point(18) = {.85*R, .85*R, 0,  15*r};
+Point(19) = { 25*R,  .3*R, 0, 300*r};
+Point(20) = { 25*R, 4.5*R, 0, 500*r};
+Point(21) = {.85*R, 1.2*R, 0,  75*r};
 
 // Main rectangle
 Line(1)  = {1,   2};

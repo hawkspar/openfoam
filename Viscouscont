@@ -1,0 +1,44 @@
+#!/bin/bash
+
+./Allclean
+./Generatemesh
+
+sed -i 's/tolerance       [^;]*/tolerance       1e-6/' system/fvSolution;
+sed -i 's/p       [^;]*/p       1e-4/' system/fvSolution;
+sed -i 's/U       [^;]*/U       1e-6/' system/fvSolution;
+sed -i 's/nuTilda [^;]*/nuTilda 1e-5/' system/fvSolution;
+
+for i in 1 2 3; do
+	nu=$(awk '{printf("%.5e",10^ -(2+$1))}' <<< "$i");
+	echo "Iteration $i ongoing... Viscosity at $nu";
+	sed -i "s/nu              [^;]*/nu              $nu/" constant/transportProperties;
+	let "startTime=0";
+	if [[  "$i" -gt 0 ]]; then
+		l=$(find . -type d -regex "./[0-9]*");
+		for x in $l ; do 
+    			n=${x#\.\/}; # take just the number so that comparisons work 
+    			[ "$n" -gt "$startTime" ] && startTime=$n; 
+  		done
+	fi
+	let "endTime=startTime+1000";
+	sed -i 's/startTime       [^;]*/startTime       '$startTime'/' system/controlDict;
+	sed -i 's/endTime         [^;]*/endTime         '$endTime'/' system/controlDict;
+	
+	./Hotstart &> /dev/null;
+
+	if ! tail -1 log.simpleFoam | grep "Finalising parallel run"; then
+		echo "Calculations broke down...";
+		break;
+	fi
+done
+
+
+sed -i "s/nu              [^;]*/nu              5.e-6/" constant/transportProperties;
+sed -i 's/startTime       [^;]*/startTime       '$endTime'/' system/controlDict;	
+sed -i 's/endTime         [^;]*/endTime         5000/' system/controlDict;
+sed -i 's/tolerance       [^;]*/tolerance       1e-12/' system/fvSolution;
+sed -i 's/p       [^;]*/p       1e-12/' system/fvSolution;
+sed -i 's/U       [^;]*/U       1e-12/' system/fvSolution;
+sed -i 's/nuTilda [^;]*/nuTilda 1e-9/' system/fvSolution;
+
+./Hotstart &> /dev/null;

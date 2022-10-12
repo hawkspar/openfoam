@@ -130,7 +130,7 @@ boundaryField
 		const fvPatch& boundaryPatch = patch();
 		const vectorField& Cf = boundaryPatch.Cf();
 		const scalar t = this->db().time().value();
-		const scalar U_m = .5*(1-int(t/1000)*.13);
+		const scalar U_m = .5;
 		const scalar R = .1;
 		const scalar a = 6.;
 		forAll(Cf, faceI) {
@@ -144,25 +144,8 @@ boundaryField
 
     far    
     {
-        type codedFixedValue;
+        type fixedValue;
         value uniform (.5 0 0);
-        name farProfile;
-
-        codeInclude
-        #{
-                #include "math.h"
-        #};
-
-        code
-        #{
-                const fvPatch& boundaryPatch = patch();
-                const vectorField& Cf = boundaryPatch.Cf();
-                const scalar t = this->db().time().value();
-		const scalar U_m = .5*(1-int(t/1000)*.13);
-                forAll(Cf, faceI) {
-                        (*this)[faceI] = vector(U_m,0,0);
-                }
-        #};
     }
 
     outlet

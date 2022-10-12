@@ -3,6 +3,11 @@
 ./Allclean
 ./Generatemesh
 
+sed -i 's/tolerance       [^;]*/tolerance       1e-6/' system/fvSolution;
+sed -i 's/p       [^;]*/p       1e-4/' system/fvSolution;
+sed -i 's/U       [^;]*/U       1e-6/' system/fvSolution;
+sed -i 's/nuTilda [^;]*/nuTilda 1e-5/' system/fvSolution;
+
 for i in 1 2 3; do
 	nu=$(awk '{printf("%.5e",10^ -(2+$1))}' <<< "$i");
 	echo "Iteration $i ongoing... Viscosity at $nu";
@@ -27,8 +32,13 @@ for i in 1 2 3; do
 	fi
 done
 
+
 sed -i "s/nu              [^;]*/nu              5.e-6/" constant/transportProperties;
 sed -i 's/startTime       [^;]*/startTime       '$endTime'/' system/controlDict;	
 sed -i 's/endTime         [^;]*/endTime         5000/' system/controlDict;
+sed -i 's/tolerance       [^;]*/tolerance       1e-12/' system/fvSolution;
+sed -i 's/p       [^;]*/p       1e-12/' system/fvSolution;
+sed -i 's/U       [^;]*/U       1e-12/' system/fvSolution;
+sed -i 's/nuTilda [^;]*/nuTilda 1e-9/' system/fvSolution;
 
 ./Hotstart &> /dev/null;

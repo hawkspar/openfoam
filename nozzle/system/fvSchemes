@@ -32,33 +32,31 @@ gradSchemes
 
 divSchemes
 {
-    default         none;
+    default          none;
 
-    div(phi,U)      bounded Gauss linearUpwind grad(U);
-
+    div(phi,U)       bounded Gauss linearUpwind grad(U);
     div(phi,nuTilda) bounded Gauss linearUpwind grad(nuTilda);
-
-    div((nuEff*dev2(T(grad(U))))) 	Gauss linear;
+    div((nuEff*dev2(T(grad(U))))) Gauss linear;
 }
 
 laplacianSchemes
 {
-    default         Gauss linear corrected;
+    default Gauss linear corrected;
 }
 
 interpolationSchemes
 {
-    default         linear;
+    default linear;
 }
 
 snGradSchemes
 {
-    default         corrected;
+    default corrected;
 }
 
 wallDist
 {
-    method          meshWave;
+    method meshWave;
 }
 
 

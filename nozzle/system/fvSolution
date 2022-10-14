@@ -21,7 +21,7 @@ solvers
         solver          GAMG;
         smoother        GaussSeidel;
         tolerance       1e-12;
-        relTol          .01;
+        relTol          1e-6;
     }
 
     "(U|nuTilda)"
@@ -30,7 +30,7 @@ solvers
         smoother  	GaussSeidel;
 	nSweeps		2;
         tolerance       1e-12;
-        relTol          .1;
+        relTol          1e-6;
     }
 }
 

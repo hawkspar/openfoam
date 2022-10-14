@@ -8,8 +8,8 @@ sed -i 's/p       [^;]*/p       1e-4/' system/fvSolution;
 sed -i 's/U       [^;]*/U       1e-6/' system/fvSolution;
 sed -i 's/nuTilda [^;]*/nuTilda 1e-5/' system/fvSolution;
 
-for i in 1 2 3; do
-	nu=$(awk '{printf("%.5e",10^ -(2+$1))}' <<< "$i");
+for i in 1 2 3 4; do
+	nu=$(awk '{printf("%.5e",10^ -(1+$1))}' <<< "$i");
 	echo "Iteration $i ongoing... Viscosity at $nu";
 	sed -i "s/nu              [^;]*/nu              $nu/" constant/transportProperties;
 	let "startTime=0";

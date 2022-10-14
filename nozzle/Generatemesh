@@ -17,10 +17,4 @@ awk -v RS="\0" -v ORS="" '{ gsub(/outlet\n    {\n        type            patch;\
 awk -v RS="\0" -v ORS="" '{ gsub(/wall\n    {\n        type            patch;\n        physicalType    patch;/, "wall\n    {\n        type            wall;\n        physicalType    wall;\n        inGroups        1(wall);"); print }' constant/polyMesh/boundary > tmp
 mv tmp constant/polyMesh/boundary
 
-runApplication createBaffles
-rm -rf constant/polyMesh
-mesh_adress=$(find . -type d -regex "./[1-9][0-9]*") # For some reason createBaffles creates duplicate of mesh in first time directory (careful hypothesis of cllean case here)
-mv -f $mesh_adress"/polyMesh" constant/polyMesh
-rm -rf $mesh_adress
-
 cp -r 0.orig 0

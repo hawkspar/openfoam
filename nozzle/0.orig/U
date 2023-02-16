@@ -20,7 +20,6 @@ internalField #codeStream //Use codeStream to set the value of the initial condi
     codeInclude
     #{
         #include "fvCFD.H"
-        #include "math.h"
     #};
     codeOptions
     #{
@@ -41,22 +40,20 @@ internalField #codeStream //Use codeStream to set the value of the initial condi
         const fvMesh& mesh = refCast<const fvMesh>(d.db());
 	const vectorField& CC = mesh.C(); //cell center 
 
-	const scalar U_M = 10;
-	const scalar U_m = .5;
-	const scalar R = .1;
-	const scalar a = 6.;
+	const scalar U_m = .05;
+	const scalar a = 6;
 	vectorField U(mesh.nCells(), vector(0,0,0));
         forAll(U, i)
         {
 		// Access cell centers coordinates
 		const scalar y = CC[i].y();
 		const scalar z = CC[i].z();
-		const scalar r =(y*y+z*z)/R/R;
-		if (r<1) {
-			U[i][0] = U_M*tanh(a*(1-r));
+		const scalar r2= y*y+z*z;
+		if (r2<1) {
+			U[i][0] =     tanh(a*(1-r2));
 		}
 		else {
-			U[i][0] = U_m*tanh(a*(r-1));
+			U[i][0] = U_m*tanh(a*(r2-1));
 		}
         }
         U.writeEntry("", os);
@@ -71,28 +68,21 @@ boundaryField
 	value uniform (0 0 0);
     	
 	name inletLaminarProfile;
-	
-	codeInclude
-	#{
-		#include "math.h"
-	#};
 
 	code
 	#{
 		const fvPatch& boundaryPatch = patch();
 		const vectorField& Cf = boundaryPatch.Cf();
-		const scalar U_M = 10;
-		const scalar R = .1;
 		const scalar a = 6.;
 		
 		const scalar t = this->db().time().value();
-		const scalar S = max(int(t/100000)*.1,0);
+		const scalar S = max(int((t-1000)/4000)*.2,0);
 
 		forAll(Cf, faceI) {
-			const scalar y = Cf[faceI].y()/R;
-			const scalar z = Cf[faceI].z()/R;
-			const scalar r2 =      y*y+z*z;
-			const scalar ux = U_M*tanh(a*(1-r2));
+			const scalar y = Cf[faceI].y();
+			const scalar z = Cf[faceI].z();
+			const scalar r2 = y*y+z*z;
+			const scalar ux = tanh(a*(1-r2));
 			const scalar uth = S*ux;
 			(*this)[faceI] = vector(ux,z*uth,y*uth);
 		}
@@ -119,39 +109,35 @@ boundaryField
 	type codedFixedValue;
 	value uniform (0 0 0);
 	name coflowLaminarProfile;
-	
-	codeInclude
-	#{
-		#include "math.h"
-	#};
 
 	code
 	#{
 		const fvPatch& boundaryPatch = patch();
 		const vectorField& Cf = boundaryPatch.Cf();
+
 		const scalar t = this->db().time().value();
-		const scalar U_m = .5;
-		const scalar R = .1;
+		const scalar U_m = .05;
 		const scalar a = 6.;
+
 		forAll(Cf, faceI) {
 			const scalar y = Cf[faceI].y();
 			const scalar z = Cf[faceI].z();
-			const scalar r = (y*y+z*z)/R/R;
-			(*this)[faceI] = vector(U_m*tanh(a*(r-1)),0,0);
+			const scalar r2 = y*y+z*z;
+			(*this)[faceI] = vector(U_m*tanh(a*(r2-1)),0,0);
 		}
 	#};
     }
 
     far    
     {
-        type fixedValue;
-        value uniform (.5 0 0);
+	type fixedValue;
+	value uniform (.05 0 0);
     }
 
     outlet
     {
 	type freestream;
-	freestreamValue uniform (.5 0 0);
+	freestreamValue uniform (.05 0 0);
     }
 
 }

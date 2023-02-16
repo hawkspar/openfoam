@@ -1,0 +1,143 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  dev
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    format      ascii;
+    class       volVectorField;
+    object	U;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+dimensions      [0 1 -1 0 0 0 0];
+
+internalField #codeStream //Use codeStream to set the value of the initial conditions
+{
+    codeInclude
+    #{
+        #include "fvCFD.H"
+    #};
+    codeOptions
+    #{
+        -I$(LIB_SRC)/finiteVolume/lnInclude \
+        -I$(LIB_SRC)/meshTools/lnInclude
+    #};
+    codeLibs
+    #{
+        -lmeshTools \
+        -lfiniteVolume
+    #};
+    //Depending of what are you trying to do, you will need to add new files, options and libraries.
+    //For most of the cases, this part is always the same.
+
+    code //Insert your code here. At this point, you need to know how to access internal mesh information
+    #{
+        const IOdictionary& d = static_cast<const IOdictionary&>(dict);
+        const fvMesh& mesh = refCast<const fvMesh>(d.db());
+	const vectorField& CC = mesh.C(); //cell center 
+
+	const scalar U_m = .05;
+	const scalar a = 6;
+	vectorField U(mesh.nCells(), vector(0,0,0));
+        forAll(U, i)
+        {
+		// Access cell centers coordinates
+		const scalar y = CC[i].y();
+		const scalar z = CC[i].z();
+		const scalar r2= y*y+z*z;
+		if (r2<1) {
+			U[i][0] =     tanh(a*(1-r2));
+		}
+		else {
+			U[i][0] = U_m*tanh(a*(r2-1));
+		}
+        }
+        U.writeEntry("", os);
+    #};
+};;
+
+boundaryField
+{
+    inlet
+    {
+	type codedFixedValue;
+	value uniform (0 0 0);
+    	
+	name inletLaminarProfile;
+
+	code
+	#{
+		const fvPatch& boundaryPatch = patch();
+		const vectorField& Cf = boundaryPatch.Cf();
+		const scalar a = 6.;
+		
+		const scalar t = this->db().time().value();
+		const scalar S = max(int(t/1000-5)*.1,0);
+
+		forAll(Cf, faceI) {
+			const scalar y = Cf[faceI].y();
+			const scalar z = Cf[faceI].z();
+			const scalar r2 = y*y+z*z;
+			const scalar ux = tanh(a*(1-r2));
+			const scalar uth = S*ux;
+			(*this)[faceI] = vector(ux,z*uth,y*uth);
+		}
+	#};
+    }
+
+    front
+    {
+        type wedge;
+    }
+
+    back
+    {
+        type wedge;
+    }
+
+    wall
+    {
+        type noSlip;
+    }
+
+    coflow
+    {
+	type codedFixedValue;
+	value uniform (0 0 0);
+	name coflowLaminarProfile;
+
+	code
+	#{
+		const fvPatch& boundaryPatch = patch();
+		const vectorField& Cf = boundaryPatch.Cf();
+		const scalar t = this->db().time().value();
+		const scalar U_m = .05;
+		const scalar a = 6.;
+		forAll(Cf, faceI) {
+			const scalar y = Cf[faceI].y();
+			const scalar z = Cf[faceI].z();
+			const scalar r2 = y*y+z*z;
+			(*this)[faceI] = vector(U_m*tanh(a*(r2-1)),0,0);
+		}
+	#};
+    }
+
+    far    
+    {
+        type fixedValue;
+        value uniform (.05 0 0);
+    }
+
+    outlet
+    {
+	type freestream;
+	freestreamValue uniform (.05 0 0);
+    }
+
+}
+
+// ************************************************************************* //

@@ -1,14 +1,14 @@
 // Gmsh project created on Fri May 15 17:21:02 2020
 Mesh.MshFileVersion = 2.2;
-R=.1;
+R=1;
 L=60*R; H=15*R; o=1;
-r=5e-5; h = 1e-5*R;
+r=1e-3; h = 2.5e-4;
 
 // Base 'rectangle'
 Point(1) = {0, 0, 0,  100*r};
 Point(2) = {L, 0, 0,  500*r};
-Point(3) = {L, H, 0, 6000*r};
-Point(4) = {0, H, 0, 6000*r};
+Point(3) = {L, H, 0, 2000*r};
+Point(4) = {0, H, 0, 2000*r};
 // Actual nozzle
 Point(5) = {0, R,   0, r};
 Point(6) = {0, R+h, 0, r};

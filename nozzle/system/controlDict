@@ -14,33 +14,33 @@ FoamFile
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-application     simpleFoam;
+application       simpleFoam;
 
-startFrom       startTime;
+startFrom         startTime;
 
-startTime       4000;
+startTime         5000;
 
-stopAt          endTime;
+stopAt            endTime;
 
-endTime         5000;
+endTime           10000;
 
-deltaT          1;
+deltaT            1;
 
-writeControl    timeStep;
+writeControl      timeStep;
 
-writeInterval   $endTime;
+writeInterval     $endTime;
 
-purgeWrite      0;
+purgeWrite        0;
 
-writeFormat     binary;
+writeFormat       binary;
 
-writePrecision  6;
+writePrecision    6;
 
-writeCompression off;
+writeCompression  off;
 
-timeFormat      fixed;
+timeFormat        fixed;
 
-timePrecision   0;
+timePrecision     0;
 
 runTimeModifiable true;
 

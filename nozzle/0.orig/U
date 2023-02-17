@@ -40,7 +40,7 @@ internalField #codeStream //Use codeStream to set the value of the initial condi
         const fvMesh& mesh = refCast<const fvMesh>(d.db());
 	const vectorField& CC = mesh.C(); //cell center 
 
-	const scalar U_m = .05;
+	const scalar U_m = .1;
 	const scalar a = 6;
 	vectorField U(mesh.nCells(), vector(0,0,0));
         forAll(U, i)
@@ -76,7 +76,7 @@ boundaryField
 		const scalar a = 6.;
 		
 		const scalar t = this->db().time().value();
-		const scalar S = max(int((t-1000)/4000)*.2,0);
+		const scalar S = max(int((t-6000)/4000)*.2,0);
 
 		forAll(Cf, faceI) {
 			const scalar y = Cf[faceI].y();
@@ -116,7 +116,7 @@ boundaryField
 		const vectorField& Cf = boundaryPatch.Cf();
 
 		const scalar t = this->db().time().value();
-		const scalar U_m = .05;
+		const scalar U_m = max(.1-max(int((t-4000)/1000)*.02,0),.01);
 		const scalar a = 6.;
 
 		forAll(Cf, faceI) {
@@ -130,14 +130,26 @@ boundaryField
 
     far    
     {
-	type fixedValue;
-	value uniform (.05 0 0);
+	type codedFixedValue;
+	value uniform (0 0 0);
+	name farLaminarProfile;
+
+	code
+	#{
+		const fvPatch& boundaryPatch = patch();
+		const vectorField& Cf = boundaryPatch.Cf();
+		
+		const scalar t = this->db().time().value();
+		const scalar U_m = max(.1-max(int((t-4000)/1000)*.02,0),.01);
+
+		forAll(Cf, faceI) { (*this)[faceI] = vector(U_m,0,0); }
+	#};
     }
 
     outlet
     {
 	type freestream;
-	freestreamValue uniform (.05 0 0);
+	freestreamValue uniform (.1 0 0);
     }
 
 }

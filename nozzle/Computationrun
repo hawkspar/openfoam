@@ -12,8 +12,8 @@ export OMPI_ALLOW_RUN_AS_ROOT_CONFIRM=1
 runParallel simpleFoam
 
 runApplication reconstructParMesh -constant
-runApplication reconstructPar -latestTime
+runApplication reconstructPar
 
-runApplication foamToVTK -fields '(p U nut)' -patches '(front)' -no-internal -latestTime 
+runApplication foamToVTK -fields '(p U nut)' -patches '(front)' -no-internal 
 
 #------------------------------------------------------------------------------

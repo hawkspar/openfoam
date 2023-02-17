@@ -2,13 +2,13 @@
 Mesh.MshFileVersion = 2.2;
 R=1;
 L=60*R; H=15*R; o=1;
-r=1e-3; h = 2.5e-4;
+r=1e-4; h = 2e-5;
 
 // Base 'rectangle'
 Point(1) = {0, 0, 0,  100*r};
 Point(2) = {L, 0, 0,  500*r};
-Point(3) = {L, H, 0, 2000*r};
-Point(4) = {0, H, 0, 2000*r};
+Point(3) = {L, H, 0, 6000*r};
+Point(4) = {0, H, 0, 6000*r};
 // Actual nozzle
 Point(5) = {0, R,   0, r};
 Point(6) = {0, R+h, 0, r};

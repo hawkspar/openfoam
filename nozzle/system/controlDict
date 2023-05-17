@@ -22,13 +22,13 @@ startTime         5000;
 
 stopAt            endTime;
 
-endTime           10000;
+endTime           37000;
 
 deltaT            1;
 
 writeControl      timeStep;
 
-writeInterval     $endTime;
+writeInterval     1000;
 
 purgeWrite        0;
 

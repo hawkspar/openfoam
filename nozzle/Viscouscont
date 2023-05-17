@@ -4,6 +4,7 @@
 ./Generatemesh
 
 sed -i 's/tolerance       [^;]*/tolerance       1e-6/' system/fvSolution;
+sed -i 's/relTol          [^;]*/relTol          1e-4/' system/fvSolution;
 sed -i 's/p       [^;]*/p       1e-4/' system/fvSolution;
 sed -i 's/U       [^;]*/U       1e-6/' system/fvSolution;
 sed -i 's/nuTilda [^;]*/nuTilda 1e-5/' system/fvSolution;
@@ -29,33 +30,34 @@ for i in 1 2 3; do
 
 	if ! tail -1 log.simpleFoam | grep "Finalising parallel run"; then
 		echo "Calculations broke down...";
-		break;
+		exit 0;
 	fi
 done
-
 # Final increment in viscosity
 sed -i "s/nu              [^;]*/nu              5.e-6/" constant/transportProperties;
 sed -i 's/startTime         [^;]*/startTime         '$endTime'/' system/controlDict;	
 sed -i 's/endTime           [^;]*/endTime           5000/' system/controlDict;
-echo "Final viscosity done, viscosity at 5.e-6 !";
-
-./Hotstart &> /dev/null;
-
-# Now reducing coflow
-sed -i 's/startTime         [^;]*/startTime         5000/' system/controlDict;	
-sed -i 's/endTime           [^;]*/endTime           10000/' system/controlDict;
+# Also less tolerance
 sed -i 's/tolerance       [^;]*/tolerance       1e-12/' system/fvSolution;
+sed -i 's/relTol          [^;]*/relTol          1e-9/' system/fvSolution;
 sed -i 's/p       [^;]*/p       1e-12/' system/fvSolution;
 sed -i 's/U       [^;]*/U       1e-12/' system/fvSolution;
-sed -i 's/nuTilda [^;]*/nuTilda 1e-9/' system/fvSolution;
-echo "Done reducing coflow.";
-
+sed -i 's/nuTilda [^;]*/nuTilda 1e-12/' system/fvSolution;
+echo "Final iteration ongoing... Viscosity at 5.e-6";
 ./Hotstart &> /dev/null;
 
-# Increasing swirl
-sed -i 's/startTime         [^;]*/startTime         10000/' system/controlDict;	
-sed -i 's/endTime           [^;]*/endTime           30000/' system/controlDict;
-sed -i 's/writeInterval     [^;]*/writeInterval     4000/' system/controlDict;
-echo "Final iteration done, swirl at maximum.";
-
+if ! tail -1 log.simpleFoam | grep "Finalising parallel run"; then
+      echo "Calculations broke down...";
+      exit 0;
+fi
+# Increasing swirl (same)
+sed -i 's/startTime         [^;]*/startTime         5000/' system/controlDict;
+let "endTime=5000+16*2000";
+sed -i 's/endTime           [^;]*/endTime           '$endTime'/' system/controlDict;
+sed -i 's/writeInterval     [^;]*/writeInterval     1000/' system/controlDict;
+echo "Increasing swirl...";
 ./Hotstart &> /dev/null;
+if ! tail -1 log.simpleFoam | grep "Finalising parallel run"; then
+      echo "Calculations broke down...";
+      exit 0;
+fi

@@ -1,0 +1,101 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  dev
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    format      ascii;
+    class       volVectorField;
+    object	U;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+dimensions      [0 1 -1 0 0 0 0];
+
+internalField #codeStream //Use codeStream to set the value of the initial conditions
+{
+    codeInclude
+    #{
+        #include "fvCFD.H"
+    #};
+    codeOptions
+    #{
+        -I$(LIB_SRC)/finiteVolume/lnInclude \
+        -I$(LIB_SRC)/meshTools/lnInclude
+    #};
+    codeLibs
+    #{
+        -lmeshTools \
+        -lfiniteVolume
+    #};
+    //Depending of what are you trying to do, you will need to add new files, options and libraries.
+    //For most of the cases, this part is always the same.
+
+    code //Insert your code here. At this point, you need to know how to access internal mesh information
+    #{
+        const IOdictionary& d = static_cast<const IOdictionary&>(dict);
+        const fvMesh& mesh = refCast<const fvMesh>(d.db());
+	const vectorField& CC = mesh.C(); //cell center 
+
+	vectorField U(mesh.nCells(), vector(0,0,0));
+        forAll(U, i)
+        {
+		// Access cell centers coordinates
+		const scalar y = CC[i].y()+.5;
+		const scalar z = CC[i].z()*2/45+.5;
+		if (y<1 && z <1) { U[i][0] = 16*y*(1-y)*z*(1-z); }
+        }
+        U.writeEntry("", os);
+    #};
+};;
+
+boundaryField
+{
+    inlet
+    {
+	type codedFixedValue;
+	value uniform (0 0 0);
+    	
+	name inletLaminarProfile;
+
+	code
+	#{
+		const fvPatch& boundaryPatch = patch();
+		const vectorField& Cf = boundaryPatch.Cf();
+		forAll(Cf, faceI) {
+			const scalar y = Cf[faceI].y()+.5;
+			const scalar z = Cf[faceI].z()*2/45+.5;
+			(*this)[faceI] = vector(16*y*(1-y)*z*(1-z),0,0);
+		}
+	#};
+    }
+
+    symmetry_y { type symmetryPlane; }
+    symmetry_z { type symmetryPlane; }
+
+    infinity_x
+    {
+	type freestreamVelocity;
+        freestreamValue uniform (-0.00023813837389587042 0 0);
+    }
+
+    infinity_y
+    {
+	type freestreamVelocity;
+        freestreamValue uniform (0 0.00023813837389587042 0);
+    }
+
+    infinity_z
+    {
+	type freestreamVelocity;
+        freestreamValue uniform (0 0 0.00023813837389587042);
+    }
+
+    wall { type noSlip; }
+
+}
+
+// ************************************************************************* //

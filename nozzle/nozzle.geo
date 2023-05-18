@@ -1,7 +1,7 @@
 // Gmsh project created on Fri May 15 17:21:02 2020
 Mesh.MshFileVersion = 2.2;
 R=1; L=60*R; H=20*R; o=1;
-r=1.2e-3; h = 1e-4;
+r=1e-3; h = 1e-4;
 
 // Base 'rectangle'
 Point(1) = {0, 0, 0,   50*r};

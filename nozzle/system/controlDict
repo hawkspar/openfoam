@@ -18,17 +18,17 @@ application       simpleFoam;
 
 startFrom         startTime;
 
-startTime         5000;
+startTime         0;
 
 stopAt            endTime;
 
-endTime           37000;
+endTime           1000;
 
 deltaT            1;
 
 writeControl      timeStep;
 
-writeInterval     1000;
+writeInterval     $endTime;
 
 purgeWrite        0;
 

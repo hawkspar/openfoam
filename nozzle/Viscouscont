@@ -52,7 +52,7 @@ if ! tail -1 log.simpleFoam | grep "Finalising parallel run"; then
 fi
 # Increasing swirl (same)
 sed -i 's/startTime         [^;]*/startTime         5000/' system/controlDict;
-let "endTime=5000+16*2000";
+let "endTime=5000+16*5000";
 sed -i 's/endTime           [^;]*/endTime           '$endTime'/' system/controlDict;
 sed -i 's/writeInterval     [^;]*/writeInterval     1000/' system/controlDict;
 echo "Increasing swirl...";

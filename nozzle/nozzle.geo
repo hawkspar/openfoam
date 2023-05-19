@@ -1,6 +1,6 @@
 // Gmsh project created on Fri May 15 17:21:02 2020
 Mesh.MshFileVersion = 2.2;
-R=1; L=60*R; H=20*R; o=1;
+R=1; L=60*R; H=15*R; o=1;
 r=1e-3; h = 1e-4;
 
 // Base 'rectangle'
@@ -23,7 +23,7 @@ Point(13) = {.95*R, 1.01*R,   0, r};
 Point(14) = {.9*R,      R,   0,   r};
 Point(15) = {.9*R,      R+h, 0,   r};
 Point(16) = {.9*R,   .9*R,   0, 4*r};
-Point(17) = { 2*R,   .9*R,   0, 5*r};
+Point(17) = { 2*R,   .9*R,   0, 7*r};
 Point(18) = { 2*R,  1.2*R,   0, 7*r};
 Point(19) = {.9*R, 1.05*R,   0, 7*r};
 // Less refined area 2

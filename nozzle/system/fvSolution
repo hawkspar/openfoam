@@ -20,8 +20,8 @@ solvers
     {
         solver          GAMG;
         smoother        GaussSeidel;
-        tolerance       1e-6;
-        relTol          1e-4;
+        tolerance       1e-12;
+        relTol          1e-9;
     }
 
     "(U|nuTilda)"
@@ -29,8 +29,8 @@ solvers
         solver          smoothSolver;
         smoother  	GaussSeidel;
 	nSweeps		2;
-        tolerance       1e-6;
-        relTol          1e-4;
+        tolerance       1e-12;
+        relTol          1e-9;
     }
 }
 
@@ -38,9 +38,9 @@ SIMPLE
 {
     residualControl
     {
-        p       1e-4;
-        U       1e-6;
-        nuTilda 1e-5;
+        p       1e-12;
+        U       1e-12;
+        nuTilda 1e-12;
     }
     consistent yes;
     nNonOrthogonalCorrectors 0;

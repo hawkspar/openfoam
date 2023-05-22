@@ -42,19 +42,21 @@ internalField #codeStream //Use codeStream to set the value of the initial condi
 
 	const scalar U_m = .5;
 	const scalar a = 6;
-	const scalar H = 15;
-
+	const scalar H = 20;
 	vectorField U(mesh.nCells(), vector(0,0,0));
         forAll(U, i)
         {
 		// Access cell centers coordinates
 		const scalar y = CC[i].y();
 		const scalar z = CC[i].z();
-		const scalar r = sqrt(y*y+z*z);
-		const scalar R = (r-1)/(H-1);
-
-		if (r<1) { U[i][0] = tanh(a*(1-r*r)); }
-		else     { U[i][0] = 2*U_m*(1-R/2)*R; }
+		const scalar r2 = y*y+z*z;
+		if (r2<1) {
+			U[i][0] = tanh(a*(1-r2));
+		}
+		else {
+			const scalar r = (sqrt(r2)-1)/(H-1);
+			U[i][0] = 2*U_m*r*(1-r/2);
+		}
         }
         U.writeEntry("", os);
     #};
@@ -73,7 +75,7 @@ boundaryField
 	#{
 		const fvPatch& boundaryPatch = patch();
 		const vectorField& Cf = boundaryPatch.Cf();
-		const scalar a = 6;
+		const scalar a = 6.;
 		
 		const scalar t = this->db().time().value();
 		const scalar S = max(int(t/5000)*.1,0);
@@ -108,7 +110,7 @@ boundaryField
     {
 	type codedFixedValue;
 	value uniform (0 0 0);
-	name coflowPoiseuilleProfile;
+	name coflowLaminarProfile;
 
 	code
 	#{
@@ -116,36 +118,34 @@ boundaryField
 		const vectorField& Cf = boundaryPatch.Cf();
 
 		const scalar t = this->db().time().value();
-		const scalar U_m = max(.5-int(t/50)*.005,.05);
-		const scalar H = 15;
-	
+		const scalar U_m = max(.5-max(int(t/250)*.025,0),.05);
+		const scalar a = 6.;
+		const scalar H = 20;
+
 		forAll(Cf, faceI) {
 			const scalar y = Cf[faceI].y();
 			const scalar z = Cf[faceI].z();
-			const scalar R = (sqrt(y*y+z*z)-1)/(H-1);
-			(*this)[faceI] = vector(2*U_m*(1-R/2)*R,0,0);
+			const scalar r = (sqrt(y*y+z*z)-1)/(H-1);
+			(*this)[faceI] = vector(2*U_m*r*(1-r/2),0,0);
 		}
 	#};
     }
 
     far    
     {
-
 	type codedFixedValue;
 	value uniform (0 0 0);
-	name farProfile;
+	name farLaminarProfile;
 
 	code
 	#{
 		const fvPatch& boundaryPatch = patch();
 		const vectorField& Cf = boundaryPatch.Cf();
-
+		
 		const scalar t = this->db().time().value();
-		const scalar U_m = max(.5-int(t/50)*.005,.05);
-	
-		forAll(Cf, faceI) {
-			(*this)[faceI] = vector(U_m,0,0);
-		}
+		const scalar U_m = max(.5-max(int(t/250)*.025,0),.05);
+
+		forAll(Cf, faceI) { (*this)[faceI] = vector(U_m,0,0); }
 	#};
     }
 

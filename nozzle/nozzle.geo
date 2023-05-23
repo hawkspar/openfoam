@@ -6,7 +6,7 @@ r=1.2e-3; h = 1e-4;
 // Base 'rectangle'
 Point(1) = {0, 0, 0,   50*r};
 Point(2) = {L, 0, 0,  200*r};
-Point(3) = {L, H, 0, 1250*r};
+Point(3) = {L, H, 0, 1000*r};
 Point(4) = {0, H, 0, 1500*r};
 // Actual nozzle
 Point(5) = {0, R,   0, r};
@@ -27,12 +27,12 @@ Point(17) = { 2*R,   .9*R,   0, 5*r};
 Point(18) = { 2*R,  1.2*R,   0, 7*r};
 Point(19) = {.9*R, 1.05*R,   0, 7*r};
 // Less refined area 2
-Point(20) = {.85*R,      R,   0,     r};
-Point(21) = {.85*R,      R+h, 0,     r};
-Point(22) = {.85*R,  .85*R,   0,   7*r};
-Point(23) = { 35*R,   .3*R,   0, 125*r};
-Point(24) = { 50*R, 14.3*R,   0, 300*r};
-Point(25) = {.85*R,    2*R,   0,  75*r};
+Point(20) = {.85*R,     R,   0,     r};
+Point(21) = {.85*R,     R+h, 0,     r};
+Point(22) = {.85*R, .85*R,   0,   7*r};
+Point(23) = { 35*R,  .3*R,   0, 125*r};
+Point(24) = { 50*R,  19*R,   0, 500*r};
+Point(25) = {.85*R,   2*R,   0,  75*r};
 
 // Main rectangle
 Line(1) = {1, 2};

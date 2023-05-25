@@ -1,0 +1,6 @@
+/* dynamicCode:
+ * SHA1 = 530909921e876bd737eb6175d500428de8323784
+ */
+fixedValueFvPatchFieldTemplate.C
+
+LIB = $(PWD)/../platforms/$(WM_OPTIONS)/lib/libfarLaminarProfile_530909921e876bd737eb6175d500428de8323784

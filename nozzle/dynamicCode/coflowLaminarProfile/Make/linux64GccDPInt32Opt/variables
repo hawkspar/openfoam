@@ -1,0 +1,1 @@
+LIB = $(PWD)/../platforms/$(WM_OPTIONS)/lib/libcoflowLaminarProfile_580d350ffe17744cd8806fca6f22ba19cf732f3d

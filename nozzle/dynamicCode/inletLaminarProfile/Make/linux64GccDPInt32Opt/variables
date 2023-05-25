@@ -1,1 +1,0 @@
-LIB = $(PWD)/../platforms/$(WM_OPTIONS)/lib/libinletLaminarProfile_6731f04feb1e2c2dedd26e13142c25cd81a466aa

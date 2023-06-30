@@ -43,6 +43,7 @@ internalField #codeStream //Use codeStream to set the value of the initial condi
 	const scalar U_m = .5;
 	const scalar a = 6;
 	const scalar H = 20;
+	const scalar h = 1e-4;
 	vectorField U(mesh.nCells(), vector(0,0,0));
         forAll(U, i)
         {
@@ -54,7 +55,7 @@ internalField #codeStream //Use codeStream to set the value of the initial condi
 			U[i][0] = tanh(a*(1-r2));
 		}
 		else {
-			const scalar r = (sqrt(r2)-1)/(H-1);
+			const scalar r = (sqrt(r2)-1-h)/(H-1-h);
 			U[i][0] = 2*U_m*r*(1-r/2);
 		}
         }
@@ -121,11 +122,12 @@ boundaryField
 		const scalar U_m = max(.5-max(int(t/250)*.025,0),.05);
 		const scalar a = 6.;
 		const scalar H = 20;
+		const scalar h = 1e-4;
 
 		forAll(Cf, faceI) {
 			const scalar y = Cf[faceI].y();
 			const scalar z = Cf[faceI].z();
-			const scalar r = (sqrt(y*y+z*z)-1)/(H-1);
+			const scalar r = (sqrt(y*y+z*z)-1-h)/(H-1-h);
 			(*this)[faceI] = vector(2*U_m*r*(1-r/2),0,0);
 		}
 	#};

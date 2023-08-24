@@ -7,3 +7,4 @@ constant/polyMesh/
 plate/
 nozzle/VTK/
 nozzle/nozzle.msh
+openfoam-docker.sh

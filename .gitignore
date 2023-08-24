@@ -6,3 +6,4 @@ processor[0-9]/
 constant/polyMesh/
 plate/
 nozzle/VTK/
+nozzle/nozzle.msh

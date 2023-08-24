@@ -79,7 +79,7 @@ boundaryField
 		const scalar a = 6.;
 		
 		const scalar t = this->db().time().value();
-		const scalar S = max(int(t/5000)*.1,0);
+		const scalar S = max(int((t-6000+2000)/2000)*.01,0);
 
 		forAll(Cf, faceI) {
 			const scalar y = Cf[faceI].y();

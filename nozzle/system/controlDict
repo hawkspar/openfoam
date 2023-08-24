@@ -18,17 +18,17 @@ application       simpleFoam;
 
 startFrom         startTime;
 
-startTime         5000;
+startTime         6000;
 
 stopAt            endTime;
 
-endTime           85000;
+endTime           206000;
 
 deltaT            1;
 
 writeControl      timeStep;
 
-writeInterval     5000;
+writeInterval	  1000;
 
 purgeWrite        0;
 
@@ -42,6 +42,6 @@ timeFormat        fixed;
 
 timePrecision     0;
 
-runTimeModifiable true;
+runTimeModifiable false;
 
 // ************************************************************************* //

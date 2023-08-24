@@ -3,29 +3,22 @@
 ./Allclean
 ./Generatemesh
 
+sed -i 's/relTol          [^;]*/relTol          1e-3/' system/fvSolution;
 sed -i 's/tolerance       [^;]*/tolerance       1e-6/' system/fvSolution;
 sed -i 's/p       [^;]*/p       1e-4/' system/fvSolution;
 sed -i 's/U       [^;]*/U       1e-6/' system/fvSolution;
 sed -i 's/nuTilda [^;]*/nuTilda 1e-5/' system/fvSolution;
 sed -i '53s/U     [^;]*/U     .99/' system/fvSolution;
 sed -i '54s/".*"  [^;]*/".*"  .99/' system/fvSolution;
-sed -i 's/writeInterval     [^;]*/writeInterval     $endTime/' system/controlDict;
+sed -i 's/writeInterval     [^;]*/writeInterval     1000/' system/controlDict;
 
-for i in 1 2 3; do
-	nu=$(awk '{printf("%.5e",10^ -(2+$1))}' <<< "$i");
-	echo "Iteration $i ongoing... Viscosity at $nu";
-	sed -i "s/nu              [^;]*/nu              $nu/" constant/transportProperties;
-	let "startTime=0";
-	if [[  "$i" -gt 0 ]]; then
-		l=$(find . -type d -regex "./[0-9]*");
-		for x in $l ; do
-   			n=${x#\.\/}; # take just the number so that comparisons work 
-    			[ "$n" -gt "$startTime" ] && startTime=$n; 
-  		done
-	fi
-	let "endTime=startTime+1000";
-	sed -i 's/startTime         [^;]*/startTime         '$startTime'/' system/controlDict;
-	sed -i 's/endTime           [^;]*/endTime           '$endTime'/' system/controlDict;
+let "time=0";
+for i in 3 4 5; do
+	sed -i 's/nu         [^;]*/nu              1e-'$i'/' constant/transportProperties;
+	echo "Iteration ongoing... Viscosity at 1e-$i";
+	sed -i 's/startTime         [^;]*/startTime         '$time'/' system/controlDict;	
+	let "time=time+1000";
+	sed -i 's/endTime           [^;]*/endTime           '$time'/' system/controlDict;
 	
 	./Hotstart &> /dev/null;
 
@@ -33,13 +26,35 @@ for i in 1 2 3; do
 		echo "UNEXPECTED ERROR ! Calculations broke down...";
 		break;
 	fi
+	let "startTime=endTime";
 done
 
+# Additional increment
+sed -i 's/nu              [^;]*/nu              7.e-6/' constant/transportProperties;
+sed -i 's/startTime         [^;]*/startTime         '$time'/' system/controlDict;	
+let "time=time+1000";
+sed -i 's/endTime           [^;]*/endTime           '$time'/' system/controlDict;
+echo "Bonus iteration ongoing... Viscosity at 7.e-6 !";
+
+./Hotstart &> /dev/null;
+
+if ! tail -1 log.simpleFoam | grep "Finalising parallel run"; then
+	echo "UNEXPECTED ERROR ! Calculations broke down...";
+	exit 0;
+fi
+
 # Final increment in viscosity
+sed -i 's/relTol          [^;]*/relTol          1e-9/' system/fvSolution;
+sed -i 's/tolerance       [^;]*/tolerance       1e-12/' system/fvSolution;
+sed -i 's/p       [^;]*/p       1e-6/' system/fvSolution;
+sed -i 's/U       [^;]*/U       1e-9/' system/fvSolution;
+sed -i 's/nuTilda [^;]*/nuTilda 1e-6/' system/fvSolution;
+sed -i '53s/U     [^;]*/U     .9/' system/fvSolution;
+sed -i '54s/".*"  [^;]*/".*"  .9/' system/fvSolution;
 sed -i 's/nu              [^;]*/nu              5.e-6/' constant/transportProperties;
-sed -i 's/startTime         [^;]*/startTime         '$endTime'/' system/controlDict;	
-let "endTime=endTime+2000";
-sed -i 's/endTime           [^;]*/endTime           '$endTime'/' system/controlDict;
+sed -i 's/startTime         [^;]*/startTime         '$time'/' system/controlDict;	
+let "time=time+2000";
+sed -i 's/endTime           [^;]*/endTime           '$time'/' system/controlDict;
 echo "Final iteration ongoing... Viscosity at 5.e-6 !";
 
 ./Hotstart &> /dev/null;
@@ -50,12 +65,11 @@ if ! tail -1 log.simpleFoam | grep "Finalising parallel run"; then
 fi
 
 # Increasing swirl
-sed -i '53s/U     [^;]*/U     .9/' system/fvSolution;
-sed -i '54s/".*"  [^;]*/".*"  .9/' system/fvSolution;
-sed -i 's/startTime         [^;]*/startTime         '$endTime'/' system/controlDict;	
-let "endTime=endTime+5000*16";
-sed -i 's/endTime           [^;]*/endTime           '$endTime'/' system/controlDict;
-sed -i 's/writeInterval     [^;]*/writeInterval     5000/' system/controlDict;
+sed -i '53s/U     [^;]*/U     .97/' system/fvSolution;
+sed -i '54s/".*"  [^;]*/".*"  .97/' system/fvSolution;
+sed -i 's/startTime         [^;]*/startTime         '$time'/' system/controlDict;	
+let "time=time+2000*100"; # Go all the way to one
+sed -i 's/endTime           [^;]*/endTime           '$time'/' system/controlDict;
 echo "Increasing swirl...";
 
 ./Hotstart &> /dev/null;

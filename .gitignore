@@ -4,3 +4,5 @@ dynamicCode/
 log.*
 processor[0-9]/
 constant/polyMesh/
+plate/
+nozzle/VTK/
